@@ -1,36 +1,28 @@
 import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { gql, useMutation } from "@apollo/client";
 
 import { Logo } from "../components/Logo";
-
-const CREATE_SUBSCRIBER_MUTATION  = gql`
-  mutation CreateSubscriber($name: String!, $email: String!) {
-    createSubscriber(data: {name: $name, email: $email}) {
-      id
-    }
-  }
-`
+import { useCreateSubscriberMutation } from "../graphql/generated";
 
 export default function Subscribe() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
 
-  const [createSubscriber, { loading }] = useMutation(CREATE_SUBSCRIBER_MUTATION)
+  const [createSubscriber, { loading }] = useCreateSubscriberMutation();
 
   async function handleSubscribe(event: FormEvent) {
-    event.preventDefault()
+    event.preventDefault();
 
     await createSubscriber({
       variables: {
         name,
         email
       }
-    })
+    });
 
-    navigate("/event")
+    navigate("/event");
   }
 
   return (
@@ -56,18 +48,22 @@ export default function Subscribe() {
             Inscreva-se gratuitamente
           </strong>
 
-          <form onSubmit={handleSubscribe} action="" className="flex flex-col gap-2 w-full">
+          <form
+            onSubmit={handleSubscribe}
+            action=""
+            className="flex flex-col gap-2 w-full"
+          >
             <input
               className="bg-gray-900 rounded px-5 h-14"
               type="text"
               placeholder="Seu nome completo"
-              onChange={event => setName(event.target.value)}
+              onChange={(event) => setName(event.target.value)}
             />
             <input
               className="bg-gray-900 rounded px-5 h-14"
               type="email"
               placeholder="Digite seu e-mail"
-              onChange={event => setEmail(event.target.value)}
+              onChange={(event) => setEmail(event.target.value)}
             />
             <button
               type="submit"
